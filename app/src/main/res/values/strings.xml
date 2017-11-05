@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">RoomCache</string>
+    <string name="id">ID</string>
+    <string name="name">Name</string>
+    <string name="data_name">Data name</string>
+    <string name="create_new_data">Create New Data</string>
 </resources>

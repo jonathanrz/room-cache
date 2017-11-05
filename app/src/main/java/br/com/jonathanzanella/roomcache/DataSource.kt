@@ -1,7 +1,5 @@
 package br.com.jonathanzanella.roomcache
 
-import android.accounts.Account
-
 interface DataSource {
     fun all(): List<Data>
     fun save(data: Data): Boolean
