@@ -1,6 +1,5 @@
 package br.com.jonathanzanella.roomcache
 
-import android.annotation.SuppressLint
 import android.arch.persistence.room.Room
 import android.os.AsyncTask
 import android.os.Bundle
@@ -24,7 +23,6 @@ class MainActivity : AppCompatActivity() {
             object : AsyncTask<Void, Void, Void?>() {
                 override fun doInBackground(vararg p0: Void?): Void? {
                     dataSource.save(Data(name = new_data_name.text.toString()))
-                    dataAdapter.loadData()
                     return null
                 }
 
@@ -38,6 +36,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        dataAdapter.loadData()
+        dataAdapter.onStart()
+    }
+
+    override fun onStop() {
+        dataAdapter.onStop()
+        super.onStop()
     }
 }

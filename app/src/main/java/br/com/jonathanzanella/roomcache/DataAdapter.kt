@@ -1,15 +1,18 @@
 package br.com.jonathanzanella.roomcache
 
-import android.annotation.SuppressLint
-import android.os.AsyncTask
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.row_data.view.*
 
 class DataAdapter (val dataSource: DataSource) : RecyclerView.Adapter<DataAdapter.ViewHolder>() {
     private var dataArray: List<Data> = ArrayList()
+    private var disposable: Disposable? = null
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         fun setData(data: Data) {
@@ -27,17 +30,18 @@ class DataAdapter (val dataSource: DataSource) : RecyclerView.Adapter<DataAdapte
 
     override fun getItemCount(): Int = dataArray.size
 
-    fun loadData() {
-        object : AsyncTask<Void, Void, Void?>() {
-            override fun doInBackground(vararg p0: Void?): Void? {
-                dataArray = dataSource.all()
-                return null
-            }
+    fun onStart() {
+        disposable = dataSource.all()
+                .doOnNext {
+                    Log.i("teste", "onNext ${it.size}")
+                    dataArray = it
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { notifyDataSetChanged() }
+    }
 
-            override fun onPostExecute(result: Void?) {
-                super.onPostExecute(result)
-                notifyDataSetChanged()
-            }
-        }.execute()
+    fun onStop() {
+        disposable?.dispose()
     }
 }
