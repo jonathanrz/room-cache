@@ -14,7 +14,6 @@ class DataRepository(private val dao: DataDao) : DataSource {
     }
     private val mergeData: (List<Data>, Data) -> List<Data> = { cache, newData ->
         val index = cache.indexOfFirst { it.id == newData.id }
-        Log.i("teste", "index:$index")
         when(index) {
             -1 -> cache + newData
             0 ->  (arrayOf(newData) as List<Data>) + cache.subList(1, cache.size)
