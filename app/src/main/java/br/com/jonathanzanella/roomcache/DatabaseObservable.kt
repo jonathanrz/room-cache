@@ -17,9 +17,6 @@ class DatabaseObservable<T>(private val generateData: () -> List<T>, private val
     }
 
     fun newData(data: T) {
-        AsyncTask.execute {
-            val mergeData1 = mergeData(bs!!.blockingFirst(), data)
-            Log.i("teste", "mergeData ${mergeData1.size}")
-            bs?.onNext(mergeData1) }
+        AsyncTask.execute { bs?.onNext(mergeData(bs!!.blockingFirst(), data)) }
     }
 }
