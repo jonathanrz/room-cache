@@ -1,7 +1,6 @@
 package br.com.jonathanzanella.roomcache
 
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,10 +31,7 @@ class DataAdapter (val dataSource: DataSource) : RecyclerView.Adapter<DataAdapte
 
     fun onStart() {
         disposable = dataSource.all()
-                .doOnNext {
-                    Log.i("teste", "onNext ${it.size}")
-                    dataArray = it
-                }
+                .doOnNext { dataArray = it }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notifyDataSetChanged() }
