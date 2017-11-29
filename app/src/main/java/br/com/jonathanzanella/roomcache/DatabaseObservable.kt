@@ -22,7 +22,7 @@ class DatabaseObservable<T>(private val generateData: () -> List<T>, private val
     fun newData(data: T) {
         AsyncTask.execute {
             allData = mergeData(allData, data)
-            bs?.onNext(mergeData(allData, data))
+            bs?.onNext(allData)
         }
     }
 }
