@@ -1,6 +1,5 @@
 package br.com.jonathanzanella.roomcache
 
-import android.util.Log
 import io.reactivex.Observable
 
 interface DataSource {
@@ -21,7 +20,7 @@ class DataRepository(private val dao: DataDao) : DataSource {
         }
     }
 
-    private val dataObservable = DatabaseObservable<Data>(generateData, mergeData)
+    private val dataObservable = DatabaseObservable(generateData, mergeData)
 
     override fun all(): Observable<List<Data>> = dataObservable.cache()
     override fun save(data: Data): Boolean {
