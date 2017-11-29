@@ -1,7 +1,6 @@
 package br.com.jonathanzanella.roomcache
 
 import android.os.AsyncTask
-import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 
