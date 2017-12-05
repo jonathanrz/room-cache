@@ -1,7 +1,7 @@
 package br.com.jonathanzanella.roomcache
 
-import android.os.AsyncTask
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 
 class DatabaseObservable<T>(private val generateData: () -> List<T>, private val mergeData: (cache: List<T>, data: T) -> List<T>) {
@@ -11,18 +11,20 @@ class DatabaseObservable<T>(private val generateData: () -> List<T>, private val
     fun cache(): Observable<List<T>> {
         if(bs == null) {
             bs = BehaviorSubject.create()
-            AsyncTask.execute {
-                allData = generateData()
-                bs?.onNext(allData)
-            }
+            publishUpdate(Observable.fromCallable { generateData() })
         }
         return bs!!.replay(1).autoConnect()
     }
 
     fun newData(data: T) {
-        AsyncTask.execute {
-            allData = mergeData(allData, data)
-            bs?.onNext(allData)
-        }
+        publishUpdate(Observable.fromCallable { mergeData(allData, data) })
+    }
+
+    private fun publishUpdate(observable: Observable<List<T>>) {
+        observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
+                .doOnNext { allData = it }
+                .subscribe { bs?.onNext(it) }
     }
 }

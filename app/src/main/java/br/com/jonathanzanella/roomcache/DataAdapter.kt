@@ -32,7 +32,7 @@ class DataAdapter (val dataSource: DataSource) : RecyclerView.Adapter<DataAdapte
     fun onStart() {
         disposable = dataSource.all()
                 .doOnNext { dataArray = it }
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notifyDataSetChanged() }
     }
